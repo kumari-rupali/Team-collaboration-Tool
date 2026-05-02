@@ -2,10 +2,10 @@ import { useState, useMemo } from 'react';
 import { Layout } from './components/layout/Layout';
 import { KanbanBoard } from './components/kanban/KanbanBoard';
 import { ChatPanel } from './components/chat/ChatPanel';
-import { ParsedTaskData } from './components/chat/TaskPopup';
+import type { ParsedTaskData } from './components/chat/TaskPopup';
 import { mockTasks, mockColumns, mockUsers } from './data/mockData';
 import { getTaskHealth } from './utils/taskHealth';
-import { Task } from './types';
+import type { Task } from './types';
 import './App.css';
 
 function App() {

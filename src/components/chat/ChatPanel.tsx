@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { TaskPopup, ParsedTaskData } from './TaskPopup';
+import { TaskPopup } from './TaskPopup';
+import type { ParsedTaskData } from './TaskPopup';
 import './Chat.css';
 
 interface ChatPanelProps {

@@ -1,4 +1,4 @@
-import { Column, Task } from '../../types';
+import type { Column, Task } from '../../types';
 import { KanbanColumn } from './KanbanColumn';
 import './Kanban.css';
 
