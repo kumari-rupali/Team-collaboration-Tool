@@ -1,6 +1,10 @@
 import { useState, useMemo } from 'react';
 import { Layout } from './components/layout/Layout';
+import type { ViewState } from './components/layout/Sidebar';
 import { KanbanBoard } from './components/kanban/KanbanBoard';
+import { FocusMode } from './components/focus/FocusMode';
+import { TeamInsights } from './components/insights/TeamInsights';
+import { SecuritySettings } from './components/settings/SecuritySettings';
 import { ChatPanel } from './components/chat/ChatPanel';
 import type { ParsedTaskData } from './components/chat/TaskPopup';
 import { mockTasks, mockColumns, mockUsers } from './data/mockData';
@@ -10,6 +14,7 @@ import './App.css';
 
 function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [currentView, setCurrentView] = useState<ViewState>('dashboard');
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
   const [columns] = useState(mockColumns);
 
@@ -50,40 +55,58 @@ function App() {
     setTasks(prev => [...prev, newTask]);
   };
 
+  const renderContent = () => {
+    switch (currentView) {
+      case 'focus':
+        return <FocusMode tasks={tasks} />;
+      case 'insights':
+        return <TeamInsights tasks={tasks} />;
+      case 'security':
+        return <SecuritySettings />;
+      case 'dashboard':
+      default:
+        return (
+          <>
+            <header className="dashboard-header" style={{ marginBottom: '1rem' }}>
+              <div className="dashboard-title-area">
+                <h1>Product Engineering</h1>
+                <p className="text-muted">Manage your team's tasks and sprints.</p>
+              </div>
+              <button className="btn-primary">
+                <span style={{ fontSize: '18px' }}>➕</span>
+                <span>New Task</span>
+              </button>
+            </header>
+
+            <div className="dashboard-alerts" style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+              {alerts.overdueCount > 0 && (
+                <div style={{ padding: '0.75rem 1rem', background: 'rgba(248, 113, 113, 0.1)', border: '1px solid var(--color-danger)', borderRadius: '8px', color: 'var(--color-danger)', fontWeight: 600 }}>
+                  ⚠️ {alerts.overdueCount} task{alerts.overdueCount > 1 ? 's' : ''} overdue
+                </div>
+              )}
+              {alerts.blockedCount > 0 && (
+                <div style={{ padding: '0.75rem 1rem', background: 'rgba(100, 116, 139, 0.1)', border: '1px solid var(--text-muted)', borderRadius: '8px', color: 'var(--text-primary)', fontWeight: 600 }}>
+                  🚫 {alerts.blockedCount} task{alerts.blockedCount > 1 ? 's' : ''} blocked
+                </div>
+              )}
+              {alerts.stuckCount > 0 && (
+                <div style={{ padding: '0.75rem 1rem', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid var(--color-warning)', borderRadius: '8px', color: 'var(--color-warning)', fontWeight: 600 }}>
+                  ⏳ {alerts.stuckCount} task{alerts.stuckCount > 1 ? 's' : ''} stuck
+                </div>
+              )}
+            </div>
+            
+            <KanbanBoard tasks={tasks} columns={columns} />
+          </>
+        );
+    }
+  };
+
   return (
     <div style={{ display: 'flex', width: '100vw', overflow: 'hidden' }}>
-      <Layout onToggleChat={() => setIsChatOpen(!isChatOpen)}>
-        <div className="dashboard-content">
-          <header className="dashboard-header" style={{ marginBottom: '1rem' }}>
-            <div className="dashboard-title-area">
-              <h1>Product Engineering</h1>
-              <p className="text-muted">Manage your team's tasks and sprints.</p>
-            </div>
-            <button className="btn-primary">
-              <span style={{ fontSize: '18px' }}>➕</span>
-              <span>New Task</span>
-            </button>
-          </header>
-
-          <div className="dashboard-alerts" style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-            {alerts.overdueCount > 0 && (
-              <div style={{ padding: '0.75rem 1rem', background: 'rgba(248, 113, 113, 0.1)', border: '1px solid var(--color-danger)', borderRadius: '8px', color: 'var(--color-danger)', fontWeight: 600 }}>
-                ⚠️ {alerts.overdueCount} task{alerts.overdueCount > 1 ? 's' : ''} overdue
-              </div>
-            )}
-            {alerts.blockedCount > 0 && (
-              <div style={{ padding: '0.75rem 1rem', background: 'rgba(100, 116, 139, 0.1)', border: '1px solid var(--text-muted)', borderRadius: '8px', color: 'var(--text-primary)', fontWeight: 600 }}>
-                🚫 {alerts.blockedCount} task{alerts.blockedCount > 1 ? 's' : ''} blocked
-              </div>
-            )}
-            {alerts.stuckCount > 0 && (
-              <div style={{ padding: '0.75rem 1rem', background: 'rgba(251, 191, 36, 0.1)', border: '1px solid var(--color-warning)', borderRadius: '8px', color: 'var(--color-warning)', fontWeight: 600 }}>
-                ⏳ {alerts.stuckCount} task{alerts.stuckCount > 1 ? 's' : ''} stuck
-              </div>
-            )}
-          </div>
-          
-          <KanbanBoard tasks={tasks} columns={columns} />
+      <Layout onToggleChat={() => setIsChatOpen(!isChatOpen)} currentView={currentView} setCurrentView={setCurrentView}>
+        <div className="dashboard-content" style={{ height: '100%', overflowY: 'auto' }}>
+          {renderContent()}
         </div>
       </Layout>
       <ChatPanel 

@@ -1,0 +1,68 @@
+.insights-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.insight-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.insight-card h3 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.workload-bar {
+  height: 8px;
+  background: var(--bg-main);
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.workload-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+
+.workload-fill.danger {
+  background: var(--color-danger);
+}
+
+.member-stat {
+  margin-bottom: 1rem;
+}
+
+.member-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
